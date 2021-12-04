@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wet-php
+spec:
+  selector:
+    app: wet-php
+    tier: php
+  ports:
+  - protocol: "TCP"
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wet-php-deploy
+  labels:
+    app: wet-php
+    tier: php
+spec:
+  selector:
+    matchLabels:
+      app: wet-php
+      tier: php
+  replicas: 7
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: wet-php
+        tier: php
+    spec:
+      containers:
+      - image: joan17240549/wetcrud
+        name: micrudwet
+        ports:
+        - containerPort: 80

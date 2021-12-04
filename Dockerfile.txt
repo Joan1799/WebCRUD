@@ -1,0 +1,19 @@
+FROM php:8.0-apache
+RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+RUN apt-get update && apt-get upgrade -y
+
+COPY Aps/ /var/www/html/
+
+RUN chgrp -R www-data /var/www
+EXPOSE 80
+CMD ["/usr/sbin/apache2ctl","-DFOREGROUND"]
+
+FROM mysql
+ENV MYSQL_ROOT_PASSWORD=1234
+ENV MYSQL_DATABASE=php_crud
+ENV MYSQL_USER=joan
+ENV MYSQL_USER_PASSWORD=1234
+
+COPY Aps/php_crud.sql /docker-entrypoint-initdb.d/
+
+
